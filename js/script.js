@@ -39,10 +39,18 @@ document.addEventListener('DOMContentLoaded',()=>{
     "BOX",
     "AMERICAN FOOTBAL IN EU...",
   ];
+
+  const sortArr = (arr) =>{
+    arr.sort();
+  };
+
   const promoBtn = document.querySelector('.promo__btn'),
         promaGnr = document.querySelector('.promo__genre'),
         promoBg = document.querySelector('.promo__bg'),
-        listNews = document.querySelector('.promo__interactive-list');
+        listNews = document.querySelector('.promo__interactive-list'),
+        addForm = document.querySelector('.add'),
+        addInput = document.querySelector('.adding__input'),
+        checkbox = addForm.querySelector("[type = 'checkbox']");
     
         promoBtn.remove();
 
@@ -51,14 +59,48 @@ document.addEventListener('DOMContentLoaded',()=>{
 
     promoBg.style.backgroundImage = 'url(img/2.jpg)';
 
-    listNews.innerHTML = '';
-    news.forEach((itemNews, index)=>{
-      listNews.innerHTML +=`
+    addForm.addEventListener('submit',(event)=>{
+      event.preventDefault();
+
+      let newFilm = addInput.value;
+      const favourite = checkbox.checked;
+
+      if (newFilm) {
+        if (newFilm.length > 21) {
+          newFilm = `${newFilm.substring(0, 21)}...`;
+        }
+        if (favourite) {
+          console.log('sevimli yangilik qoshildi');
+        }
+      news.push(newFilm);
+      sortArr(news);
+      createNewList(news,listNews);        
+      }
+      event.target.reset();
+    });
+
+    function createNewList(newsList,parent){
+      parent.innerHTML = '';
+      sortArr(news);
+      newsList.forEach((itemNews, index)=>{
+        parent.innerHTML +=`
       <li class="promo__interactive-item">
        ${index+1}  ${itemNews} 
       <div class="delete"></div>
       </li>
       ` ;
     });
+
+    document.querySelectorAll('.delete').forEach((btn,i)=>{
+      btn.addEventListener('click',()=>{
+        btn.parentElement.remove();
+        news.splice(i,1);
+        createNewList(newsList,parent);    
+      });
+    });
+
+    }
+
+    createNewList(news,listNews);    
 
 });
